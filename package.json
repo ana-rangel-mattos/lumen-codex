@@ -1,0 +1,13 @@
+{
+  "name": "lumen-codex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently 'dotnet run --project ./LumenCodex.Server/LumenCodex.Server/LumenCodex.Server.csproj' 'cd LumenCodex.Client && pnpm run dev'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0"
+}

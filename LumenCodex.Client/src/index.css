@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+@import "tailwindcss";
+
+@plugin "daisyui";
+@plugin "daisyui/theme" {
+    name: "lumencodex-dark";
+    default: true;
+    prefersdark: false; /* set as default dark mode (prefers-color-scheme:dark) */
+    color-scheme: dark; /* color of browser-provided UI */
+    --color-base-100: oklch(0.999 0.002 145.562);
+    --color-base-200: oklch(0.584 0.148 245.749);
+    --color-base-300: oklch(0.676 0.037 252.372);
+    --color-base-content: oklch(0.133 0.043 259.636);
+    --color-primary: oklch(0.173 0.037 258.406);
+    --color-primary-content: oklch(0.676 0.037 252.372);
+    --color-secondary: oklch(0.249 0.043 262.577);
+    --color-secondary-content: oklch(0.367 0.046 254.884);
+    --color-accent: oklch(0.687 0.176 245.813);
+    --color-accent-content: oklch(0.312 0.069 0.363);
+    --color-neutral: oklch(50% 0.05 240);
+    --color-neutral-content: oklch(98% 0.01 240);
+    --color-info: oklch(70% 0.2 220);
+    --color-info-content: oklch(0.205 0.044 258.746);
+    --color-success: oklch(0.765 0.104 165.609);
+    --color-success-content: oklch(0.199 0.045 270.381);
+    --color-warning: oklch(0.209 0.034 251.364);
+    --color-warning-content: oklch(0.209 0.019 266.071);
+    --color-error: oklch(0.634 0.203 22.011);
+    --color-error-content: oklch(0.193 0.034 285.432);
+
+    /* border radius */
+    --radius-selector: 1rem;
+    --radius-field: 0.25rem;
+    --radius-box: 0.5rem;
+
+    /* base sizes */
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+
+    /* border size */
+    --border: 1px;
+
+    /* effects */
+    --depth: 1;
+    --noise: 0;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    min-height: 100dvh;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    background-color: var(--color-primary);
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace, 'Pixelify Sans', sans-serif;
+
+    position: relative;
+}
+
+#root, #root > div {
+    overflow-y: auto;
+    position: absolute;
+    inset: 0;
+}
