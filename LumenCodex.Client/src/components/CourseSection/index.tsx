@@ -1,4 +1,4 @@
-import type { Section } from "../../types/course.ts";
+import type { Section } from "../../types/ICourse.ts";
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getLessonsBySectionId } from "../../services/courseApi.ts";

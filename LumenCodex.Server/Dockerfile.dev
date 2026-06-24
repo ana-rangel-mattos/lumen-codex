@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS dev
+WORKDIR /app
+
+COPY Services/*.csproj ./Services/
+COPY LumenCodex.Server/*.csproj ./LumenCodex.Server/
+
+RUN dotnet restore LumenCodex.Server/LumenCodex.Server.csproj
+
+COPY . .
+
+EXPOSE 8080
+
+ENTRYPOINT [ "dotnet", "watch", "--project", "LumenCodex.Server/LumenCodex.Server.csproj", "run", "--urls", "http://.0.0.0.0:8080" ]

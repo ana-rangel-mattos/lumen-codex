@@ -6,7 +6,7 @@ namespace Services;
 
 public class FileScanner : IFileScanner, IDisposable
 {
-    public string[] AllowedExtensions { get; } = ["mp4", "mkv", "webm", "md", "html", "txt"];
+    public string[] AllowedExtensions { get; } = ["mp4", "ts", "mkv", "webm", "md", "html", "txt"];
     
     private readonly LumenContext _context;
     
@@ -162,6 +162,10 @@ public class FileScanner : IFileScanner, IDisposable
         
         foreach (var lessonInfo in sectionInfo.GetFiles())
         {
+            if (lessonInfo.Name.StartsWith(".") || lessonInfo.Name.EndsWith(".zip") || 
+                lessonInfo.Name.EndsWith(".rar"))
+                continue;
+            
             string ext = GetLessonExtension(lessonInfo.Name);
             if (ext.EndsWith(".srt") || ext.EndsWith(".vtt"))
                 continue;
@@ -182,10 +186,10 @@ public class FileScanner : IFileScanner, IDisposable
             GetLessonType(lessonInfo.Name)
         );
         
-        var videoLessons = new List<LessonType> { LessonType.Mkv, LessonType.Mp4, LessonType.Webm };
+        var videoLessons = new List<LessonType> { LessonType.Mkv, LessonType.Ts, LessonType.Mp4, LessonType.Webm };
         var textLessons = new List<LessonType> { LessonType.Txt, LessonType.Html, LessonType.Md };
         
-        if (videoLessons.Contains(newLesson.LessonType))
+        if (newLesson.LessonType != LessonType.Ts && videoLessons.Contains(newLesson.LessonType))
         {
             var ffpobe = new NReco.VideoInfo.FFProbe();
             var videoInfo = ffpobe.GetMediaInfo(newLesson.RootPath);
@@ -200,6 +204,7 @@ public class FileScanner : IFileScanner, IDisposable
 
         var subtitleFiles = sectionInfo.GetFiles()
             .Where(f => 
+                !f.Name.StartsWith(".") &&
                 f.Extension == ".srt" || f.Extension == ".vtt" 
                 && f.Name.StartsWith(lessonWithoutExt)
             );
@@ -207,8 +212,16 @@ public class FileScanner : IFileScanner, IDisposable
         foreach (var subtitleFile in subtitleFiles)
         {
             SubsType type = subtitleFile.Extension.ToLower() == ".srt" ? SubsType.Srt : SubsType.Vtt;
-            string subLang = subtitleFile.Name.Replace(lessonWithoutExt, "").Split(".")[0].Replace("_", "");
+            string remainingPart = subtitleFile.Name.Substring(lessonWithoutExt.Length);
+            string[] components = remainingPart.Split(".", StringSplitOptions.RemoveEmptyEntries);
 
+            string subLang = "en";
+
+            if (components.Length > 1)
+            {
+                subLang = components[0].ToLower();
+            }
+            
             Subtitle newSubtitle = new Subtitle(subtitleFile.Name, subtitleFile.FullName, subLang, type);
             newLesson.Subtitles.Add(newSubtitle);
         }
@@ -228,7 +241,8 @@ public class FileScanner : IFileScanner, IDisposable
         return fileExtension switch
         {
             ".mp4" => LessonType.Mp4,
-            ".mvk" => LessonType.Mkv,
+            ".ts" => LessonType.Ts,
+            ".mkv" => LessonType.Mkv,
             ".webm" => LessonType.Webm,
             ".md" => LessonType.Md,
             ".html" => LessonType.Html,

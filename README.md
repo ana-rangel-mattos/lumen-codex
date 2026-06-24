@@ -33,5 +33,5 @@ git clone https://github.com/ana-rangel-mattos/lumen-codex.git
 2. **Run Docker Image**
 ```bash
 cd lumen-codex
-docker-compose up --build -d
+docker compose up -f docker-compose.yml --build -d
 ```

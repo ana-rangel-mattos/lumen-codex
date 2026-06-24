@@ -1,4 +1,4 @@
-import type { Course } from "../../types/course.ts";
+import type { ICourse } from "../../types/ICourse.ts";
 import * as React from "react";
 import { useState } from "react";
 import { Button, Dialog, LinkButton } from "../index.ts";
@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCourse } from "../../services/courseApi.ts";
 
 interface ICourseCardProps {
-  course: Course;
+  course: ICourse;
 }
 
 const CourseCard: React.FC<ICourseCardProps> = ({ course }) => {

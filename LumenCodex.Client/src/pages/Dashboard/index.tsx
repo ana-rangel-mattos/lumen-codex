@@ -33,9 +33,11 @@ const Dashboard = () => {
       </ul>
 
       <div className="join">
-        <button className="join-item btn">«</button>
-        <button className="join-item btn">Page 22</button>
-        <button className="join-item btn">»</button>
+        {data?.meta.currentPage > 1 && (
+          <button className="join-item btn">«</button>
+        )}
+        <button className="join-item btn">Page {data?.meta.currentPage}</button>
+        {data?.meta.totalPages > data?.meta.currentPage && <button className="join-item btn">»</button>}
       </div>
     </div>
   );

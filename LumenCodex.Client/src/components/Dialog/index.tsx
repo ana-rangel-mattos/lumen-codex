@@ -22,7 +22,7 @@ const Dialog: React.FC<IDialogProps> = (props) => {
 
   return (
     <div
-      className={`${isOpen ? "" : "hidden"} bg-base-content fixed top-90 right-175 left-175 z-20 space-y-4 rounded-md px-6 py-4`}
+      className={`${isOpen ? "" : "hidden"} bg-base-content fixed inset-65 z-20 space-y-4 rounded-md px-6 py-4`}
     >
       <p className="font-800 text-base-100 text-2xl">{dialogTitle}</p>
       <p className="text-base-300 text-lg">{content}</p>

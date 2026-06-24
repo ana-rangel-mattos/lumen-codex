@@ -1,6 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 @import "tailwindcss";
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    min-height: 100dvh;
+
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    background-color: var(--color-primary);
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace, 'Pixelify Sans', sans-serif;
+
+    position: relative;
+}
+
 @plugin "daisyui";
 @plugin "daisyui/theme" {
     name: "lumencodex-dark";
@@ -47,24 +65,4 @@
 
 *, *::before, *::after {
     box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-
-    min-height: 100dvh;
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
-    background-color: var(--color-primary);
-
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace, 'Pixelify Sans', sans-serif;
-
-    position: relative;
-}
-
-#root, #root > div {
-    overflow-y: auto;
-    position: absolute;
-    inset: 0;
 }

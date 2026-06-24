@@ -7,5 +7,6 @@ public enum LessonType
     Mp4,
     Mkv,
     Webm,
-    Html
+    Html,
+    Ts
 }

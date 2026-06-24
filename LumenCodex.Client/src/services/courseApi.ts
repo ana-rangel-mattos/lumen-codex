@@ -1,10 +1,10 @@
 import type {
-  Course,
+  ICourse,
   ICoursesResponse,
   Lesson,
   Section,
   Subtitle,
-} from "../types/course.ts";
+} from "../types/ICourse.ts";
 import {
   URL_COURSES_API,
   URL_LESSON_API,
@@ -12,7 +12,7 @@ import {
   URL_UPLOAD_API,
 } from "../utils/constants.ts";
 
-export const baseUrl = "http://localhost:5236";
+export const baseUrl = "http://localhost:8080";
 
 export const getCourses = async (): Promise<ICoursesResponse> => {
   const response = await fetch(`${baseUrl}${URL_COURSES_API}`);
@@ -20,7 +20,7 @@ export const getCourses = async (): Promise<ICoursesResponse> => {
   return await response.json();
 };
 
-export const getCourseById = async (courseId: string): Promise<Course> => {
+export const getCourseById = async (courseId: string): Promise<ICourse> => {
   const courseUrl = `${baseUrl}${URL_COURSES_API}${courseId}`;
 
   const response = await fetch(courseUrl);

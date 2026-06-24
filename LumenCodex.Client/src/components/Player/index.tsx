@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import type { Subtitle } from "../../types/course.ts";
+import type { Subtitle } from "../../types/ICourse.ts";
 import { formatTime } from "../../utils/timeConvertion.ts";
 
 interface IPlayerProps {
@@ -23,6 +23,18 @@ const Player: React.FC<IPlayerProps> = ({
   const [volume, setVolume] = useState<number>(0);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1);
   const [videoName] = useState<string>(lessonName);
+
+  useEffect(() => {
+    const player = playerRef.current;
+
+    if (!player) return;
+
+    setIsPlaying(false);
+    setCurrentTime(0);
+
+    player.pause();
+    player.load();
+  }, [videoUrl]);
 
   function handleSeek(e: React.MouseEvent<HTMLDivElement>) {
     if (!playerRef.current || !duration) return;
@@ -136,13 +148,13 @@ const Player: React.FC<IPlayerProps> = ({
       </h2>
       <video
         ref={playerRef}
+        src={videoUrl}
+        preload="metadata"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadVideo}
         onClick={handlePlayPauseClick}
         className="h-full w-full"
       >
-        <source src={videoUrl} type="video/mp4" />
-
         {subtitles?.map((subtitle) => (
           <track
             key={subtitle.subtitleId}
