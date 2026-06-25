@@ -1,8 +1,11 @@
+using LumenCodex.Server.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Services;
 using ServicesContracts;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddTransient<GlobalExceptionMiddleware>();
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IFileScanner, FileScanner>();
@@ -31,8 +34,8 @@ builder.Services.AddDbContext<LumenContext>(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseStaticFiles();
-
 app.UseRouting();
 app.UseCors("AllowAll");
 app.MapControllers();

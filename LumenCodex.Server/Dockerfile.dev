@@ -1,6 +1,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS dev
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+
 COPY Services/*.csproj ./Services/
 COPY LumenCodex.Server/*.csproj ./LumenCodex.Server/
 

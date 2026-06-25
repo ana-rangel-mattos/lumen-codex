@@ -23,8 +23,11 @@ const HomePage = () => {
     <div className="x-8 mt-6 flex h-full flex-col items-center">
       <h2 className="text-base-100 text-4xl">Add courses to your library</h2>
 
-      <form className="mt-30 flex h-full w-full flex-col gap-y-4 items-center" onSubmit={handleSubmit}>
-        <label className="input text-lg w-2/4 mx-auto">
+      <form
+        className="mt-30 flex h-full w-full flex-col items-center gap-y-4"
+        onSubmit={handleSubmit}
+      >
+        <label className="input mx-auto text-lg sm:w-3/4 md:w-4/6 lg:w-2/4">
           Root Path:
           <input
             onChange={(e) => setPath(e.target.value)}
@@ -36,7 +39,7 @@ const HomePage = () => {
           <span className="badge badge-error badge-sm">Required</span>
         </label>
 
-        <label className="input my-4 text-lg mx-auto w-2/4">
+        <label className="input mx-auto my-4 text-lg sm:w-3/4 md:w-4/6 lg:w-2/4">
           Single Course:
           <input
             type="checkbox"

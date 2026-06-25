@@ -191,8 +191,10 @@ public class FileScanner : IFileScanner, IDisposable
         
         if (newLesson.LessonType != LessonType.Ts && videoLessons.Contains(newLesson.LessonType))
         {
-            var ffpobe = new NReco.VideoInfo.FFProbe();
-            var videoInfo = ffpobe.GetMediaInfo(newLesson.RootPath);
+            var ffprobe = new NReco.VideoInfo.FFProbe();
+            ffprobe.FFProbeExeName = "ffprobe";
+            
+            var videoInfo = ffprobe.GetMediaInfo(newLesson.RootPath);
             newLesson.DurationSeconds = videoInfo.Duration.TotalSeconds;
         }
         else if (textLessons.Contains(newLesson.LessonType))

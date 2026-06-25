@@ -53,7 +53,7 @@ public class UploadController : Controller
         if (actualPath is null || !Directory.Exists(actualPath))
             return BadRequest($"Courses path does not exist inside container: {sanitizedPath}");
         
-        await _fileScanner.UploadBunchOfCoursesToDb(new DirectoryInfo(request.RootPath));
+        await _fileScanner.UploadBunchOfCoursesToDb(new DirectoryInfo(actualPath));
 
         return Created();
     }
