@@ -1,10 +1,26 @@
-import globals from "globals";
+import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import pluginReact from "eslint-plugin-react";
-import { defineConfig } from "eslint/config";
 
-export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"], languageOptions: { globals: globals.browser } },
-  tseslint.configs.recommended,
-  pluginReact.configs.flat.recommended,
-]);
+export default tseslint.config(
+  // Global ignores (replaces .eslintignore)
+  {
+    ignores: ["dist/**", "node_modules/**", "build/**"],
+  },
+
+  // Base configuration for JavaScript and TypeScript
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+
+  // Custom project rules overrides
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/no-explicit-any": "warn",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+    },
+  },
+);

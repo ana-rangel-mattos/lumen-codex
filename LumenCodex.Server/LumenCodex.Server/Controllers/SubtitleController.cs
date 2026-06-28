@@ -1,6 +1,6 @@
+using LumenCodex.Domain.Entities;
+using LumenCodex.ServicesContracts;
 using Microsoft.AspNetCore.Mvc;
-using Entities;
-using ServicesContracts;
 
 namespace LumenCodex.Server.Controllers;
 

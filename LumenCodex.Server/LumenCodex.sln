@@ -2,11 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumenCodex.Server", "LumenCodex.Server\LumenCodex.Server.csproj", "{82E2401D-2923-4FE9-843B-651A5698D132}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{E43A2FB1-5424-45C5-BE31-5A0DC1D6162F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumenCodex.Services", "LumenCodex.Services\LumenCodex.Services.csproj", "{E43A2FB1-5424-45C5-BE31-5A0DC1D6162F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{331F5955-8729-42B4-9D52-332968247DAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumenCodex.ServicesContracts", "LumenCodex.ServicesContracts\LumenCodex.ServicesContracts.csproj", "{F40ADA01-F439-41CD-9B0B-012B61BAC347}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesContracts", "ServicesContracts\ServicesContracts.csproj", "{F40ADA01-F439-41CD-9B0B-012B61BAC347}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumenCodex.Domain", "LumenCodex.Domain\LumenCodex.Domain.csproj", "{8EF3D769-25DC-4674-94D7-B87DB972B248}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,13 +22,13 @@ Global
 		{E43A2FB1-5424-45C5-BE31-5A0DC1D6162F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E43A2FB1-5424-45C5-BE31-5A0DC1D6162F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E43A2FB1-5424-45C5-BE31-5A0DC1D6162F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{331F5955-8729-42B4-9D52-332968247DAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{331F5955-8729-42B4-9D52-332968247DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{331F5955-8729-42B4-9D52-332968247DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{331F5955-8729-42B4-9D52-332968247DAD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F40ADA01-F439-41CD-9B0B-012B61BAC347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F40ADA01-F439-41CD-9B0B-012B61BAC347}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F40ADA01-F439-41CD-9B0B-012B61BAC347}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F40ADA01-F439-41CD-9B0B-012B61BAC347}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EF3D769-25DC-4674-94D7-B87DB972B248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EF3D769-25DC-4674-94D7-B87DB972B248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EF3D769-25DC-4674-94D7-B87DB972B248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EF3D769-25DC-4674-94D7-B87DB972B248}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

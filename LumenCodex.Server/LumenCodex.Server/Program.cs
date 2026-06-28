@@ -1,7 +1,7 @@
 using LumenCodex.Server.Middlewares;
+using LumenCodex.Services;
+using LumenCodex.ServicesContracts;
 using Microsoft.EntityFrameworkCore;
-using Services;
-using ServicesContracts;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,13 +1,9 @@
 import { ErrorComponent } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { getCourses } from "../../services/courseApi.ts";
 import { CourseCard, Spinner } from "../../components";
+import { useLoadCourses } from "../../hooks/useLoadCourses.ts";
 
 const Dashboard = () => {
-  const { isPending, error, data } = useQuery({
-    queryKey: ["courses"],
-    queryFn: () => getCourses(),
-  });
+  const { isPending, error, data } = useLoadCourses();
 
   if (isPending) {
     return <Spinner />;
@@ -33,11 +29,17 @@ const Dashboard = () => {
       </ul>
 
       <div className="join">
-        {data?.meta.currentPage > 1 && (
+        {data && data.meta.currentPage > 1 && (
           <button className="join-item btn">«</button>
         )}
-        <button className="join-item btn">Page {data?.meta.currentPage}</button>
-        {data?.meta.totalPages > data?.meta.currentPage && <button className="join-item btn">»</button>}
+        {data && (
+          <button className="join-item btn">
+            Page {data.meta.currentPage}
+          </button>
+        )}
+        {data && data.meta.totalPages > data.meta.currentPage && (
+          <button className="join-item btn">»</button>
+        )}
       </div>
     </div>
   );

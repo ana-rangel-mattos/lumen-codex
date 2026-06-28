@@ -36,15 +36,6 @@ export const getCourseSections = async (
   const response = await fetch(sectionsUrl);
   const data = await response.json();
 
-  const collator = new Intl.Collator("en", {
-    numeric: true,
-    sensitivity: "base",
-  });
-
-  data.sections.sort((a: Section, b: Section) =>
-    collator.compare(a.sectionName, b.sectionName),
-  );
-
   return data.sections;
 };
 

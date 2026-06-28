@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import {
   ErrorComponent,
   Link,
@@ -6,30 +5,17 @@ import {
   useParams,
 } from "@tanstack/react-router";
 import { CourseSection, Spinner } from "../../components";
-import { getCourseById, getCourseSections } from "../../services/courseApi.ts";
 import { useState } from "react";
+import { useLoadCourse } from "../../hooks/useLoadCourse.ts";
+import { useCourseSections } from "../../hooks/useCourseSections.ts";
 
 const CoursePage = () => {
   const { courseId } = useParams({ from: "/course/$courseId" });
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
-  const {
-    isPending: isSectionLoading,
-    error: sectionError,
-    data: sectionsData,
-  } = useQuery({
-    queryKey: ["sections", courseId],
-    queryFn: () => getCourseSections(courseId),
-  });
-
-  const {
-    isPending: isCourseLoading,
-    error: courseError,
-    data: courseData,
-  } = useQuery({
-    queryKey: ["course", courseId],
-    queryFn: () => getCourseById(courseId),
-  });
+  const { isSectionLoading, sectionError, sectionsData } =
+    useCourseSections(courseId);
+  const { isCourseLoading, courseError, courseData } = useLoadCourse(courseId);
 
   if (isSectionLoading || isCourseLoading) {
     return <Spinner />;
@@ -52,12 +38,14 @@ const CoursePage = () => {
                 </Link>
               </li>
               <li>
-                <Link
-                  params={{ courseId: courseData?.courseId }}
-                  to="/course/$courseId"
-                >
-                  {courseData?.courseName}
-                </Link>
+                {courseData?.courseId && (
+                  <Link
+                    params={{ courseId: courseData.courseId }}
+                    to="/course/$courseId"
+                  >
+                    {courseData.courseName}
+                  </Link>
+                )}
               </li>
               <li>This lesson</li>
             </ul>

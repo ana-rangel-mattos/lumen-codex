@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\LumenCodex.Services\LumenCodex.Services.csproj" />
       <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
 

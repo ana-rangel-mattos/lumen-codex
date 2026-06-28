@@ -1,8 +1,11 @@
-using Entities;
+using LumenCodex.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using Entities;
-using ServicesContracts;
+using LumenCodex.Domain.Entities;
+using LumenCodex.Domain.Extensions;
+using LumenCodex.Domain.Result;
+using LumenCodex.Domain.Utils;
+using LumenCodex.ServicesContracts;
 
 namespace LumenCodex.Server.Controllers;
 
@@ -17,15 +20,12 @@ public class LessonController : Controller
         _fileScanner = fileScanner;
     }
     
-    [HttpGet]
-    [Route("/api/lessons/{sectionId:guid}")]
-    public async Task<IActionResult> GetLessons(Guid sectionId)
+    [HttpGet("/api/lessons/{sectionId:guid}")]
+    public async Task<IActionResult> GetLessons(Guid sectionId, CancellationToken cancellationToken)
     {
-        List<Lesson> lessons = await _lessonService.GetLessonsBySectionId(sectionId);
+        List<Lesson> lessons = await _lessonService.GetLessonsBySectionId(sectionId, cancellationToken);
         
-        
-        
-        return Json(new
+        return Ok(new
         {
             lessons = lessons.Select(l => new
             {
@@ -39,38 +39,86 @@ public class LessonController : Controller
         });
     }
 
-    [HttpGet]
-    [Route("/api/lesson/{lessonId:guid}")]
-    public async Task<IActionResult> GetLesson(Guid lessonId)
+    [HttpGet("/api/lesson/{lessonId:guid}")]
+    public async Task<IActionResult> GetLesson(Guid lessonId, CancellationToken cancellationToken)
     {
-        Lesson? lesson = await _lessonService.GetLessonById(lessonId);
+        var lessonResult = await _lessonService.GetLessonById(lessonId, cancellationToken);
 
-        if (lesson is null)
-            return NotFound($"Lesson Id {lessonId} could not be found.");
-
-        bool isVideoLesson = ILessonService.VideoLessonTypes.Contains(lesson.LessonType);
-
-        return Json(new
+        if (lessonResult.IsFailure)
         {
-            lessonId = lesson.LessonId,
-            lessonName = lesson.LessonName,
-            lessonType = isVideoLesson ? "video" : "text",
-            streamPath = $"/api/lessons/{lesson.LessonId}/{(isVideoLesson ? "video" : "lesson")}",
-            isCompleted = lesson.IsCompleted
-        });
+            return lessonResult.Match<IActionResult>(
+                onSuccess: Ok,
+                onFailure: error =>
+                {
+                    return error.Code switch
+                    {
+                        ErrorNames.LessonLessonDoesNotExist => NotFound(error),
+                        _ => StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error.")
+                    };
+                });
+        }
+
+        var courseResult = await _lessonService.GetCourseByLessonId(lessonId, cancellationToken);
+        
+        return courseResult.Match<IActionResult>(
+            onSuccess: () =>
+            {
+                var course = courseResult.Value;
+                var naturalComparer = new NaturalStringComparer();
+
+                var fullCourseLessons = course.Sections
+                    .OrderBy(s => s.SectionName, naturalComparer)
+                    .SelectMany(s => s.Lessons.OrderBy(l => l.LessonName, naturalComparer))
+                    .ToList();
+
+                int currentIndex = fullCourseLessons.FindIndex(l => l.LessonId == lessonId);
+                
+                var lesson = lessonResult.Value;
+                bool isVideoLesson = ILessonService.VideoLessonTypes.Contains(lesson.LessonType);
+                return Ok(new
+                {
+                    lessonId = lesson.LessonId,
+                    lessonName = lesson.LessonName,
+                    lessonType = isVideoLesson ? "video" : "text",
+                    streamPath = $"/api/lessons/{lesson.LessonId}/{(isVideoLesson ? "video" : "lesson")}",
+                    isCompleted = lesson.IsCompleted,
+                    previousLessonId = currentIndex > 0 ? fullCourseLessons[currentIndex - 1]?.LessonId : null,
+                    nextLessonId = currentIndex < fullCourseLessons.Count - 1 ? fullCourseLessons[currentIndex + 1]?.LessonId : null,
+                });
+            },
+            onFailure: error =>
+            {
+                return error.Code switch
+                {
+                    ErrorNames.LessonLessonDoesNotExist => NotFound(error),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error.")
+                };
+            });
     }
 
-    [HttpGet]
-    [Route("/api/lessons/{lessonId:guid}/text")]
-    public async Task<IActionResult> GetLessonText(Guid lessonId)
+    [HttpGet("/api/lessons/{lessonId:guid}/text")]
+    public async Task<IActionResult> GetLessonText(Guid lessonId, CancellationToken cancellationToken)
     {
-        Lesson? lesson = await _lessonService.GetLessonById(lessonId);
-        
-        if (lesson is null)
-            return NotFound($"Lesson Id {lessonId} was not found");
+        var lessonResult = await _lessonService.GetLessonById(lessonId, cancellationToken);
 
+        if (lessonResult.IsFailure)
+        {
+            return lessonResult.Match<IActionResult>(
+                onSuccess: Ok,
+                onFailure: error =>
+                {
+                    return error.Code switch
+                    {
+                        ErrorNames.LessonLessonDoesNotExist => NotFound(error),
+                        _ => StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error.")
+                    };
+                }
+            );   
+        }
+
+        var lesson = lessonResult.Value;
         string content = "";
-        
+    
         if (ILessonService.TextLessonTypes.Contains(lesson.LessonType))
         {
             content = await _lessonService.ConvertTextToHtml(new FileInfo(lesson.RootPath));
@@ -79,15 +127,27 @@ public class LessonController : Controller
         return Content(content, "text/html");
     }
     
-    [HttpGet]
-    [Route("/api/lessons/{lessonId:guid}/video")]
-    public async Task<IActionResult> StreamLessonVideo(Guid lessonId)
+    [HttpGet("/api/lessons/{lessonId:guid}/video")]
+    public async Task<IActionResult> StreamLessonVideo(Guid lessonId, CancellationToken cancellationToken)
     {
-        Lesson? lesson = await _lessonService.GetLessonById(lessonId);
+        var lessonResult = await _lessonService.GetLessonById(lessonId, cancellationToken);
 
-        if (lesson is null)
-            return NotFound($"Lesson Id {lessonId} was not found");
-        
+        if (lessonResult.IsFailure)
+        {
+            return lessonResult.Match<IActionResult>(
+                onSuccess: Ok,
+                onFailure: error =>
+                {
+                    return error.Code switch
+                    {
+                        ErrorNames.LessonLessonDoesNotExist => NotFound(error),
+                        _ => StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error.")
+                    };
+                }
+            );   
+        }
+
+        var lesson = lessonResult.Value;
         string lessonType = lesson.LessonType.ToString().ToLower();
         string lessonPath = lesson.RootPath;
 
@@ -108,18 +168,22 @@ public class LessonController : Controller
         return BadRequest($"Lesson type {lessonType} is not supported.");
     }
 
-    [HttpPatch]
-    [Route("/api/lessons/{lessonId:guid}")]
-    public async Task<IActionResult> MarkLessonAsCompleted(Guid lessonId, [FromQuery] bool? isCompleted)
+    [HttpPatch("/api/lessons/{lessonId:guid}")]
+    public async Task<IActionResult> MarkLessonAsCompleted(Guid lessonId, [FromQuery] bool isCompleted, CancellationToken cancellationToken)
     {
-        if (isCompleted is null)
-            return BadRequest("Is Completed must be provided");
-
-        bool hasUpdated = await _lessonService.MarkLessonAsCompleted(lessonId, isCompleted.Value);
-
-        if (!hasUpdated)
-            return NotFound($"Lesson Id {lessonId} was not found");
-
-        return NoContent();
+        MarkLessonAsComplete request = new(lessonId, isCompleted);
+        
+        var result = await _lessonService.MarkLessonAsCompleted(request, cancellationToken);
+        
+        return result.Match<IActionResult>(
+            onSuccess: Ok,
+            onFailure: error =>
+            {
+                return error.Code switch
+                {
+                    ErrorNames.LessonLessonDoesNotExist => NotFound(error),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error.")
+                };
+            });
     }
 }

@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
-using Entities;
-using ServicesContracts;
+using LumenCodex.ServicesContracts;
 
 namespace LumenCodex.Server.Controllers;
 
